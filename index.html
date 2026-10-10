@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JEJAK — Catatan Pendakian Indonesia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f2ecdc; --paper2:#faf6ea; --paper3:#e9e1cb;
+    --ink:#1d1a13; --ink-soft:#4d4636; --ink-faint:#8a7f66;
+    --terra:#bc5222; --terra-deep:#8f3c15;
+    --moss:#43603c; --moss-deep:#2c4028;
+    --line:#d6cbb0; --line-dark:#b9ab88;
+    --serif:"Bricolage Grotesque","Arial Black",sans-serif;
+    --sans:"Inter",system-ui,sans-serif;
+    --mono:"JetBrains Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--terra);color:var(--paper)}
+
+  /* ---------- top strip ---------- */
+  .topbar{border-bottom:1px solid var(--line-dark);display:flex;justify-content:space-between;align-items:center;padding:13px 30px;font-family:var(--mono);font-size:10.5px;letter-spacing:2.5px;color:var(--ink-faint);background:var(--paper)}
+  .topbar .wordmark{font-family:var(--serif);font-weight:900;font-size:20px;letter-spacing:5px;color:var(--ink)}
+  .topbar .wordmark i{font-style:normal;color:var(--terra)}
+  .live{display:flex;align-items:center;gap:8px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--moss);animation:pulse 2.2s infinite}
+  @keyframes pulse{50%{opacity:.35}}
+  @media(max-width:720px){.topbar div:last-child{display:none}}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line-dark);padding:76px 30px 64px;background:var(--paper)}
+  .topo{position:absolute;inset:0;opacity:.14;pointer-events:none}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:3.5px;color:var(--terra-deep);margin-bottom:24px}
+  .eyebrow::before{content:"";display:inline-block;width:34px;height:1px;background:var(--terra);vertical-align:middle;margin-right:12px}
+  .hero h1{font-family:var(--serif);font-weight:800;font-size:clamp(64px,12vw,150px);line-height:.93;letter-spacing:-3px}
+  .hero h1 em{font-style:normal;color:var(--terra-deep)}
+  .hero h1 .line{display:block;overflow:hidden}
+  .hero h1 .line>span{display:block;will-change:transform}
+  .hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;margin-top:36px;align-items:end}
+  .hero-grid p.lede{font-family:var(--serif);font-size:20px;line-height:1.55;color:var(--ink-soft);max-width:560px}
+  .hero-grid p.lede strong{color:var(--ink)}
+  .facts{border-top:2px solid var(--ink);padding-top:4px}
+  .fact{display:flex;justify-content:space-between;align-items:baseline;padding:11px 2px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--ink-faint)}
+  .fact b{font-family:var(--serif);font-size:24px;color:var(--ink);letter-spacing:0}
+  @media(max-width:720px){.hero-grid{grid-template-columns:1fr}}
+
+  /* ---------- marquee ---------- */
+  .marquee{background:var(--terra-deep);overflow:hidden;white-space:nowrap;padding:12px 0}
+  .marquee .track{display:inline-block;animation:mq 42s linear infinite;font-family:var(--mono);font-size:12px;letter-spacing:3px;color:#e8c9a8}
+  .marquee .track b{color:var(--paper);font-weight:700}
+  @keyframes mq{to{transform:translateX(-50%)}}
+
+  /* ---------- main ---------- */
+  .main{display:grid;grid-template-columns:410px 1fr;align-items:start}
+  @media(max-width:980px){.main{grid-template-columns:1fr}}
+
+  .brief{padding:44px 30px;border-right:1px solid var(--line-dark);position:sticky;top:0;background:var(--paper)}
+  @media(max-width:980px){.brief{border-right:none;border-bottom:1px solid var(--line-dark);position:static}}
+  .sec-kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:3px;color:var(--terra-deep);margin-bottom:8px}
+  .sec-title{font-family:var(--serif);font-size:32px;font-weight:700;margin-bottom:8px}
+  .sec-sub{font-size:14px;color:var(--ink-faint);margin-bottom:30px;max-width:320px}
+
+  .field{margin-bottom:26px}
+  .field .no{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--terra-deep);display:block;margin-bottom:6px}
+  .field label.q{display:block;font-family:var(--serif);font-size:17px;font-weight:700;margin-bottom:10px}
+  select,input[type=text],input[type=password]{width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--line-dark);color:var(--ink);padding:10px 2px;font-size:15.5px;font-family:var(--sans);outline:none;border-radius:0;transition:border-color .15s}
+  select:focus,input:focus{border-bottom-color:var(--terra)}
+  select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23bc5222' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 4px center;cursor:pointer}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;border:1px solid var(--line-dark);color:var(--ink-soft);padding:9px 14px;cursor:pointer;user-select:none;border-radius:999px;transition:all .15s;background:transparent}
+  .chip:hover{border-color:var(--ink)}
+  .chip.on{background:var(--moss-deep);border-color:var(--moss-deep);color:var(--paper)}
+
+  .cta{width:100%;margin-top:30px;background:var(--ink);color:var(--paper);border:none;border-radius:2px;padding:18px 16px;font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:3px;cursor:pointer;transition:background .15s;text-align:center}
+  .cta:hover{background:var(--terra-deep)}
+  .cta:disabled{opacity:.5;cursor:wait}
+  .cta small{display:block;font-weight:400;letter-spacing:1.5px;font-size:10px;margin-top:6px;opacity:.6}
+
+  details{margin-top:22px;border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:var(--ink-soft)}
+  details summary{cursor:pointer;font-family:var(--mono);font-size:10.5px;letter-spacing:2.5px;color:var(--moss-deep);font-weight:700}
+  details .inner{margin-top:12px}
+  details .inner label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:2px;margin:14px 0 4px;color:var(--ink-faint)}
+  details code{color:var(--terra-deep);font-family:var(--mono);font-size:12px}
+
+  /* ---------- report ---------- */
+  .report{padding:44px 30px;background:var(--paper2);min-height:72vh;border-left:1px solid var(--line)}
+  @media(max-width:980px){.report{border-left:none}}
+  .rep-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:6px}
+  .rep-head h2{font-family:var(--serif);font-size:27px;font-weight:700}
+  .rep-meta{font-family:var(--mono);font-size:10.5px;letter-spacing:2px;color:var(--ink-faint);text-align:right;white-space:nowrap}
+  .empty{padding:80px 12px;text-align:center}
+  .empty .big{font-family:var(--serif);font-style:italic;font-size:26px;margin-bottom:12px}
+  .empty p{font-size:14.5px;color:var(--ink-faint);max-width:400px;margin:0 auto}
+  .empty .hint{font-family:var(--mono);font-size:10.5px;letter-spacing:2.5px;color:var(--terra-deep);margin-top:20px;display:block}
+  .spin{width:38px;height:38px;border:2px solid var(--line);border-top-color:var(--terra);border-radius:50%;margin:70px auto;animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+
+  .md{animation:fade .5s}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+  .md h3{font-family:var(--serif);font-size:22px;font-weight:700;margin:32px 0 10px}
+  .md h3:first-child{margin-top:8px}
+  .md h3 .n{font-family:var(--mono);font-size:11px;color:var(--terra-deep);letter-spacing:2px;display:block;margin-bottom:4px;font-weight:500}
+  .md p{margin:10px 0;color:var(--ink-soft)}
+  .md ul{margin:10px 0;list-style:none}
+  .md li{margin:9px 0;padding-left:26px;position:relative;color:var(--ink-soft)}
+  .md li::before{content:"✳";position:absolute;left:0;color:var(--terra);font-size:12px;top:3px}
+  .md strong{color:var(--ink)}
+  .tblwrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line-dark);border-radius:2px;background:var(--paper2)}
+  table.mdtbl{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px}
+  .mdtbl th{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;text-align:left;padding:11px 13px;background:var(--paper3);color:var(--ink);border-bottom:2px solid var(--ink);white-space:nowrap}
+  .mdtbl td{padding:11px 13px;border-bottom:1px solid var(--line);color:var(--ink-soft);vertical-align:top}
+  .mdtbl tr:last-child td{border-bottom:none}
+  .mdtbl td strong{color:var(--ink)}
+  .basecamp{margin-top:34px;border:1.5px solid var(--terra);background:#fbf3e2;padding:18px 22px;border-radius:2px}
+  .basecamp .t{font-family:var(--mono);font-size:10px;letter-spacing:3px;color:var(--terra-deep);margin-bottom:8px;font-weight:700}
+  .basecamp p{font-size:13.5px;color:var(--ink-soft)}
+
+  footer{border-top:1px solid var(--line-dark);padding:24px 30px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--ink-faint);background:var(--paper)}
+  footer a{color:var(--terra-deep);text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wordmark">JEJAK<i>.</i></div>
+  <div class="live"><span class="dot"></span>MODEL&nbsp;·&nbsp;GPT&#8209;OSS&#8209;20B&nbsp;OPEN&#8209;WEIGHT</div>
+  <div>CATATAN&nbsp;LAPANGAN&nbsp;Nº&nbsp;001&nbsp;—&nbsp;HACKTOBERFEST&nbsp;'26</div>
+</div>
+
+<section class="hero">
+  <svg class="topo" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 1200 420">
+    <g fill="none" stroke="#43603c" stroke-width="1.2">
+      <path d="M-20,340 C220,300 380,360 620,320 S1020,280 1220,320"/>
+      <path d="M-20,300 C220,260 380,320 620,280 S1020,240 1220,280"/>
+      <path d="M-20,260 C220,220 380,280 620,240 S1020,200 1220,240"/>
+      <path d="M-20,220 C220,180 380,240 620,200 S1020,160 1220,200"/>
+      <path d="M-20,180 C220,140 380,200 620,160 S1020,120 1220,160"/>
+      <path d="M-20,140 C220,100 380,160 620,120 S1020,80 1220,120"/>
+      <path d="M-20,380 C220,340 380,400 620,360 S1020,320 1220,360"/>
+      <ellipse cx="860" cy="120" rx="90" ry="34"/><ellipse cx="860" cy="120" rx="55" ry="20"/><ellipse cx="860" cy="120" rx="24" ry="9"/>
+    </g>
+  </svg>
+  <div class="eyebrow">Seri Touch Grass — Oktober 2026</div>
+  <h1><span class="line"><span>Pilih gunung</span></span><span class="line"><span>dengan <em>kepala dingin.</em></span></span></h1>
+  <div class="hero-grid">
+    <p class="lede">Jejak membaca profil pendakianmu, menyilangkannya dengan
+    data <strong>18 gunung Indonesia</strong>, lalu meminta model
+    <strong>open-weight</strong> menyusun rencana yang jujur — termasuk
+    saat jawabannya adalah <em>"kamu belum siap."</em></p>
+    <div class="facts">
+      <div class="fact"><span>GUNUNG TERKURASI</span><b>18</b></div>
+      <div class="fact"><span>MODEL</span><b>Gemma</b></div>
+      <div class="fact"><span>LISENSI MODEL</span><b>Terbuka</b></div>
+      <div class="fact"><span>SERVER PERANTARA</span><b>0</b></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee"><span class="track" id="mq"></span></div>
+
+<div class="main">
+  <aside class="brief">
+    <div class="sec-kicker">LEMBAR 01 — PROFIL PENDAKI</div>
+    <div class="sec-title">Ceritakan dirimu</div>
+    <p class="sec-sub">Semakin jujur jawabanmu, semakin jujur rekomendasinya. AI ini dilatih untuk tidak memujimu.</p>
+
+    <div class="field">
+      <span class="no">Pertanyaan 01</span>
+      <label class="q">Pengalaman mendakimu?</label>
+      <select id="level">
+        <option value="pemula — belum pernah / baru 1–2 kali naik gunung">Baru mulai — belum pernah / 1–2 kali</option>
+        <option value="menengah — sudah beberapa kali naik, terbiasa trek 6+ jam">Menengah — terbiasa trek 6+ jam</option>
+        <option value="berpengalaman — terbiasa multi-day, medan teknis">Berpengalaman — medan teknis oke</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <span class="no">Pertanyaan 02</span>
+      <label class="q">Waktu yang kamu punya?</label>
+      <select id="durasi">
+        <option value="tektok (pulang-pergi sehari)">Tektok — berangkat pagi, pulang malam</option>
+        <option value="2 hari 1 malam">2D1N — ngecamp semalam</option>
+        <option value="3 hari 2 malam atau lebih">3D2N+ — ekspedisi panjang</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <span class="no">Pertanyaan 03</span>
+      <label class="q">Apa yang ingin kamu lihat di atas?</label>
+      <div class="chips" id="minat">
+        <span class="chip" data-v="sunrise">Sunrise</span>
+        <span class="chip" data-v="kawah">Kawah</span>
+        <span class="chip" data-v="danau">Danau</span>
+        <span class="chip" data-v="air terjun">Air terjun</span>
+        <span class="chip" data-v="hutan">Hutan</span>
+        <span class="chip" data-v="edelweis">Edelweis</span>
+        <span class="chip" data-v="sabana">Sabana</span>
+        <span class="chip" data-v="pantai">Dekat pantai</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="no">Pertanyaan 04</span>
+      <label class="q">Kapan & dari mana?</label>
+      <select id="bulan" style="margin-bottom:14px">
+        <option>Oktober</option><option>November</option><option>Desember</option>
+        <option>Januari</option><option>Februari</option><option>Maret</option>
+        <option>April</option><option>Mei</option><option>Juni</option>
+        <option>Juli</option><option>Agustus</option><option>September</option>
+      </select>
+      <input type="text" id="kota" placeholder="Kota berangkat — mis. Jakarta" value="Jakarta" style="margin-bottom:14px">
+      <input type="text" id="catatan" placeholder="Catatan — mis. bawa anak, cari yang sepi...">
+    </div>
+
+    <button class="cta" id="go" onclick="rekomendasikan()">MINTA REKOMENDASI<small>DIPROSES MODEL OPEN-WEIGHT · ±10 DETIK</small></button>
+
+    <details>
+      <summary>KONFIGURASI MODEL</summary>
+      <div class="inner">
+        <p>Jejak memakai model <b>open-weight</b> via Groq (gratis).
+        Bikin API key gratis di <code>console.groq.com</code> → API Keys —
+        tersimpan hanya di browser-mu, tidak lewat server mana pun.</p>
+        <label>GROQ API KEY</label>
+        <input type="password" id="token" placeholder="gsk_...">
+        <label>MODEL OPEN-WEIGHT</label>
+        <input type="text" id="model" value="openai/gpt-oss-20b">
+      </div>
+    </details>
+  </aside>
+
+  <section class="report">
+    <div class="rep-head">
+      <h2>Lembar rekomendasi</h2>
+      <div class="rep-meta" id="repmeta">STATUS — KOSONG</div>
+    </div>
+    <div id="result">
+      <div class="empty">
+        <div class="big">Halaman ini masih kosong.</div>
+        <p>Jawab empat pertanyaan di lembar sebelah, tekan tombolnya, dan
+        rekomendasi gunung khusus untukmu akan ditulis di sini.</p>
+        <span class="hint">← MULAI DARI LEMBAR 01</span>
+      </div>
+    </div>
+    <div class="basecamp" id="warnbox" style="display:none">
+      <div class="t">PESAN DARI BASECAMP</div>
+      <p>AI bisa salah — verifikasi ulang status jalur, cuaca, dan buka/tutup gunung
+      ke basecamp resmi sebelum berangkat. Keselamatanmu tanggung jawabmu.</p>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div>JEJAK — HACKTOBERFEST 2026 · WEEK 1 · TOUCH GRASS</div>
+  <div>GPT-OSS OPEN-WEIGHT · <a href="https://hacktoberfest.com" target="_blank">HACKTOBERFEST.COM</a></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+/* ============ DATA KURASI: 18 GUNUNG INDONESIA ============ */
+const TRAILS = [
+ {n:"Gunung Gede",prov:"Jawa Barat",h:2958,d:3,w:"2D1N",base:"Cibodas / Cipanas",izin:"Simaksi online TN Gede Pangrango",hi:"Alun-alun Surya Kencana, kawah aktif, Curug Cibeureum",tag:"sunrise,kawah,air terjun,hutan"},
+ {n:"Gunung Pangrango",prov:"Jawa Barat",h:3019,d:3,w:"2D1N",base:"Cibodas",izin:"Simaksi online TN Gede Pangrango",hi:"Hutan lumut, Lembah Mandalawangi",tag:"hutan,sunrise"},
+ {n:"Gunung Papandayan",prov:"Jawa Barat",h:2665,d:2,w:"Tektok / 2D1N",base:"Camp David",izin:"Tiket kawasan wisata",hi:"Kawah aktif, Hutan Mati, Pondok Saladah",tag:"kawah,pemula"},
+ {n:"Gunung Ciremai",prov:"Jawa Barat",h:3078,d:4,w:"2D1N",base:"Apuy / Palutungan",izin:"Simaksi TNGC",hi:"Atap Jawa Barat",tag:"sunrise,menantang"},
+ {n:"Gunung Slamet",prov:"Jawa Tengah",h:3428,d:4,w:"2D1N",base:"Bambangan / Guci",izin:"Simaksi Perhutani",hi:"Atap Jawa Tengah, kawah aktif",tag:"menantang,kawah"},
+ {n:"Gunung Sumbing",prov:"Jawa Tengah",h:3371,d:4,w:"2D1N",base:"Gedong / Bowongso",izin:"Simaksi basecamp",hi:"Sunrise Segoro Banjaran",tag:"sunrise,menantang"},
+ {n:"Gunung Sindoro",prov:"Jawa Tengah",h:3153,d:3,w:"2D1N",base:"Kledung",izin:"Simaksi basecamp",hi:"Padang edelweis",tag:"edelweis,sunrise"},
+ {n:"Gunung Merbabu",prov:"Jawa Tengah",h:3145,d:3,w:"2D1N",base:"Selo",izin:"Simaksi online TNGMb",hi:"Sabana Selo, view Merapi",tag:"sabana,sunrise"},
+ {n:"Gunung Lawu",prov:"Jawa Tengah / Timur",h:3265,d:3,w:"2D1N",base:"Cemoro Sewu / Candi Cetho",izin:"Tiket kawasan",hi:"Hargo Dalem, situs budaya",tag:"budaya,sunrise"},
+ {n:"Gunung Semeru",prov:"Jawa Timur",h:3676,d:5,w:"3D2N",base:"Ranu Pani",izin:"Simaksi online — kuota ketat, booking jauh hari",hi:"Ranu Kumbolo, Kalimati",tag:"danau,menantang"},
+ {n:"Gunung Bromo",prov:"Jawa Timur",h:2329,d:1,w:"Tektok",base:"Cemoro Lawang",izin:"Tiket BBTN Bromo Tengger Semeru",hi:"Sunrise Penanjakan, lautan pasir",tag:"sunrise,pemula"},
+ {n:"Gunung Ijen",prov:"Jawa Timur",h:2799,d:2,w:"Tektok",base:"Paltuding",izin:"Tiket + surat sehat",hi:"Blue fire, kawah belerang",tag:"kawah,unik"},
+ {n:"Gunung Prau",prov:"Jawa Tengah",h:2565,d:1,w:"Tektok / 2D1N",base:"Patak Banteng / Dieng",izin:"Tiket kawasan",hi:"Sunrise dengan 5 gunung sekaligus",tag:"sunrise,pemula"},
+ {n:"Gunung Andong",prov:"Jawa Tengah",h:1726,d:1,w:"Tektok",base:"Dusun Pendem",izin:"Tiket basecamp",hi:"Ramah pemula, view Merbabu",tag:"pemula"},
+ {n:"Gunung Ungaran",prov:"Jawa Tengah",h:2050,d:2,w:"Tektok",base:"Mawar / Gedong Songo",izin:"Tiket Perhutani",hi:"Candi Gedong Songo di kaki gunung",tag:"budaya"},
+ {n:"Gunung Cikuray",prov:"Jawa Barat",h:2821,d:3,w:"Tektok / 2D1N",base:"Pemancar",izin:"Simaksi basecamp",hi:"Trek menanjak terus",tag:"menantang"},
+ {n:"Gunung Galunggung",prov:"Jawa Barat",h:2168,d:2,w:"Tektok",base:"Cisayong",izin:"Tiket kawasan",hi:"Kawah + danau",tag:"kawah,danau,pemula"},
+ {n:"Gunung Rinjani",prov:"NTB",h:3726,d:5,w:"4D3N",base:"Sembalun / Senaru",izin:"e-Ticket TNGR — booking jauh hari, wajib guide",hi:"Segara Anak",tag:"danau,menantang"}
+];
+
+/* marquee */
+(function(){
+  const names=TRAILS.map(t=>t.n.toUpperCase()).join(' &nbsp;·&nbsp; ');
+  document.getElementById('mq').innerHTML='<b>GEDE</b> &nbsp;·&nbsp; '+names+' &nbsp;·&nbsp; <b>'+names+'</b> &nbsp;·&nbsp; ';
+})();
+
+document.querySelectorAll('#minat .chip').forEach(c=>{c.onclick=()=>c.classList.toggle('on');});
+(function(){
+  const t=localStorage.getItem('jejak_groq'); if(t) document.getElementById('token').value=t;
+  document.getElementById('bulan').selectedIndex=new Date().getMonth();
+})();
+
+function inline(s){
+  return s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<em>$2</em>');
+}
+function mdLite(t){
+  let i=0; const tables=[];
+  // angkat blok tabel dulu, render jadi HTML tabel beneran (cadangan kalau model bandel)
+  t=t.replace(/(?:^\|.+\|\s*\n?)+/gm,function(block){
+    const rows=block.trim().split('\n').map(r=>r.trim().replace(/^\|/,'').replace(/\|$/,'').split('|').map(c=>inline(c.trim())));
+    const body=rows.filter(r=>!r.every(c=>/^:?-{2,}:?$/.test(c)));
+    if(body.length<2) return block;
+    const html='<div class="tblwrap"><table class="mdtbl"><thead><tr>'+
+      body[0].map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+
+      body.slice(1).map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+
+      '</tbody></table></div>';
+    tables.push(html);
+    return '@@JEJAKTBL'+(tables.length-1)+'@@';
+  });
+  let out=t
+    .replace(/^### (.*)$/gm,function(m,h){return '<h3><span class="n">BAGIAN '+String(++i).padStart(2,'0')+'</span>'+inline(h)+'</h3>';})
+    .replace(/^## (.*)$/gm,function(m,h){return '<h3><span class="n">BAGIAN '+String(++i).padStart(2,'0')+'</span>'+inline(h)+'</h3>';})
+    .replace(/^- (.*)$/gm,function(m,h){return '<li>'+inline(h)+'</li>';})
+    .replace(/(<li>.*<\/li>\n?)+/g,function(m){return '<ul>'+m+'</ul>';})
+    .split(/\n{2,}/).map(function(p){p=p.trim(); if(!p) return '';
+      if(p.startsWith('<')||/^@@JEJAKTBL\d+@@$/.test(p)) return p;
+      return '<p>'+inline(p)+'</p>';}).join('');
+  out=out.replace(/@@JEJAKTBL(\d+)@@/g,function(m,n){return tables[+n];});
+  return out;
+}
+
+async function rekomendasikan(){
+  const token=document.getElementById('token').value.trim();
+  const model=document.getElementById('model').value.trim()||'openai/gpt-oss-20b';
+  if(!token){alert('Isi Groq API key dulu di KONFIGURASI MODEL (gratis, 2 menit di console.groq.com).');return;}
+  localStorage.setItem('jejak_groq',token);
+
+  const level=document.getElementById('level').value;
+  const durasi=document.getElementById('durasi').value;
+  const minat=[...document.querySelectorAll('#minat .chip.on')].map(c=>c.dataset.v).join(', ')||'bebas';
+  const kota=document.getElementById('kota').value||'Jakarta';
+  const bulan=document.getElementById('bulan').value;
+  const catatan=document.getElementById('catatan').value;
+  const data=TRAILS.map(t=>`- ${t.n} (${t.prov}, ${t.h} mdpl, level ${t.d}/5, ${t.w}, basecamp: ${t.base}, izin: ${t.izin}, highlight: ${t.hi})`).join('\n');
+
+  const sys=`Kamu JEJAK, asisten pendakian Indonesia yang jujur dan mengutamakan keselamatan. Kamu HANYA boleh merekomendasikan gunung dari DATA GUNUNG — jangan mengarang gunung lain. Jawab SELALU dalam Bahasa Indonesia. ATURAN FORMAT KERAS: setiap bagian diawali heading ### , isi dengan bullet list (-) atau paragraf pendek. DILARANG memakai tabel markdown (|) dalam bentuk apa pun. Jujurlah soal kesulitan: jangan rekomendasikan level 4-5 ke pemula.`;
+  const usr=`DATA GUNUNG:\n${data}\n\nPROFIL: Level ${level} | Durasi ${durasi} | Minat: ${minat} | Dari ${kota} | Bulan ${bulan} | Catatan: ${catatan||'-'}\n\nSusun (INGAT: tanpa tabel, hanya ### + bullet list):\n### Rekomendasi Teratas\n2-3 gunung PALING cocok + alasan per gunung (satu bullet per gunung).\n### Gambaran Trip\nUntuk rekomendasi #1: itinerary singkat untuk bulan ${bulan} + info izin (bullet list).\n### Packing List\nBarang wajib sesuai level & durasi (bullet list).\n### Catatan Keselamatan\nPeringatan jujur sesuai level dan musim ${bulan} (bullet list).`;
+
+  const res=document.getElementById('result'), btn=document.getElementById('go');
+  const meta=document.getElementById('repmeta'), warn=document.getElementById('warnbox');
+  res.innerHTML='<div class="spin"></div>'; btn.disabled=true;
+  meta.textContent='STATUS — MENULIS…';
+  res.scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  try{
+    const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+      body:JSON.stringify({model:model,messages:[{role:'system',content:sys},{role:'user',content:usr}],max_tokens:3000,temperature:0.7})
+    });
+    if(!r.ok){const e=await r.text();throw new Error('HTTP '+r.status+' — '+e.slice(0,160));}
+    const j=await r.json();
+    const txt=j.choices?.[0]?.message?.content||'(respon kosong)';
+    const now=new Date();
+    meta.textContent='LEMBAR Nº '+String(now.getDate()).padStart(2,'0')+String(now.getMonth()+1).padStart(2,'0')+' · '+now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})+' WIB';
+    res.innerHTML='<div class="md">'+mdLite(txt)+'</div>';
+    warn.style.display='block';
+    if(window.gsap && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+      gsap.from('#result .md > *',{y:24,opacity:0,duration:.7,ease:'power3.out',stagger:.08});
+      gsap.from('#warnbox',{y:16,opacity:0,duration:.6,ease:'power2.out',delay:.35});
+    }
+  }catch(e){
+    meta.textContent='STATUS — GAGAL';
+    let msg=e.message;
+    if(msg.includes('401')||msg.toLowerCase().includes('invalid_api_key')){
+      msg='API key salah / tidak valid. Cek lagi key dari <b>console.groq.com → API Keys</b>.';
+    } else if(msg.includes('Failed to fetch')){
+      msg='Browser gagal menghubungi Hugging Face sama sekali. Kemungkinan: (1) kamu buka file-nya dengan cara berbeda dari waktu dapat error 403 — preview di aplikasi chat kadang di-sandbox tanpa akses network, coba buka file-nya langsung di browser (double-click); (2) adblocker/VPN memblokir; (3) koneksi putus sesaat — tunggu sebentar lalu coba lagi.';
+    }
+    res.innerHTML='<p style="color:#8f3c15">Gagal memanggil model: '+msg+'</p>';
+  }
+  btn.disabled=false;
+}
+
+/* ============ BANG-MOTION: cinematic entrance & scroll ============ */
+(function(){
+  if(!window.gsap) return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  // garis topografi ke-draw sendiri saat load
+  document.querySelectorAll('.topo path, .topo ellipse').forEach((p,i)=>{
+    try{
+      const len=p.getTotalLength();
+      p.style.strokeDasharray=len;
+      p.style.strokeDashoffset=len;
+      gsap.to(p,{strokeDashoffset:0,duration:2.4,ease:'power2.out',delay:.2+i*.07});
+    }catch(e){}
+  });
+
+  // entrance: topbar -> eyebrow -> headline per baris -> lede -> fakta -> marquee
+  const tl=gsap.timeline({defaults:{ease:'expo.out'}});
+  tl.from('.topbar',{y:-26,opacity:0,duration:.8})
+    .from('.eyebrow',{y:18,opacity:0,duration:.7},'-=.5')
+    .from('.hero h1 .line > span',{yPercent:115,duration:1.15,stagger:.13},'-=.45')
+    .from('.hero-grid .lede',{y:28,opacity:0,duration:.9},'-=.75')
+    .from('.fact',{y:22,opacity:0,duration:.7,stagger:.09},'-=.7')
+    .from('.marquee',{opacity:0,duration:.8},'-=.4');
+
+  // scroll reveal: field briefing + laporan
+  gsap.utils.toArray('.brief .field, .brief .cta, .brief details').forEach(el=>{
+    gsap.from(el,{y:30,opacity:0,duration:.85,ease:'power3.out',
+      scrollTrigger:{trigger:el,start:'top 90%'}});
+  });
+  gsap.from('.report .rep-head',{y:26,opacity:0,duration:.85,ease:'power3.out',
+    scrollTrigger:{trigger:'.report',start:'top 82%'}});
+
+  // parallax: headline melayang pelan saat scroll
+  gsap.to('.hero h1',{yPercent:10,ease:'none',
+    scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+  gsap.to('.topo',{yPercent:-8,ease:'none',
+    scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+})();
+</script>
+</body>
+</html>
