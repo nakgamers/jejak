@@ -18,7 +18,7 @@ model matches you against a curated dataset of 18 Indonesian mountains —
 then hands you a plan, a packing list, and an honest safety briefing.
 
 🔗 **Try it:** [RENDER_URL]
-💻 **Code:** [GITHUB_URL]
+💻 **Code:** https://github.com/nakgamers/jejak
 
 ---
 
